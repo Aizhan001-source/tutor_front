@@ -1,15 +1,15 @@
-import { LoginForm } from '../../components/Login/ui/LoginForm';
+import { LoginForm } from '../Login/ui/LoginForm';
+import { Logo } from "../Login/ui/Logo"
 
 export const LoginPage = () => {
   return (
-    <div>
-      <div className='min-h-screen flex flex-col items-center justify-center'>
-        <div className='bg-[#0c75ae] px-8 py-12 rounded-[10px] text-center'>
-
-          <span className='text-4xl text-white font-[700]'>Қош келдіңіз!</span>
-          <LoginForm />
+    <div className='min-h-screen bg-gradient-to-b from-[#EFF6FF] to-[#E0E7FF]'>
+        <div className='flex items-center justify-center px-4 py-8'>
+          <div className='w-full max-w-md'>
+            <Logo />
+            <LoginForm />
+          </div>
         </div>
-      </div>
     </div>
   );
 };

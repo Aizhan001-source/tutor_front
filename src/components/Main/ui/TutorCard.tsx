@@ -1,69 +1,101 @@
-
-
 interface TutorCardProps {
+    image: string
     name: string
-    mainSubject: string
-    rating: string
-    otherSubjects: string[] // ["Calculus", "Algebra", "+1 more"]
-    experience: string // "8 years"
-    online: boolean
-    available: string // "Available today"
-    price: string // "45 /hour"
-    reviews: string // "127 student reviews"
-    photo: string
+    subject: string
+    rating: number
+    subjects: string[]
+    experience: string
+    format: string
+    availability: string
+    price: number
+    reviewsCount: number
 }
 
-export const TutorCard = ({
+export const TutorCard = ({ 
+    image,
     name,
-    mainSubject,
+    subject,
     rating,
-    otherSubjects,
+    subjects,
     experience,
-    online,
-    available,
+    format,
+    availability,
     price,
-    reviews,
-    photo
+    reviewsCount,
 }: TutorCardProps) => {
-    return (
-        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow overflow-hidden">
-            
-            {/* Фото */}
-            <div className="h-48 bg-gradient-to-br from-indigo-400 to-purple-500 relative overflow-hidden">
-                <img src={photo} alt={name} className="w-full h-full object-cover" />
-            </div>
+    return(
+        <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden">
 
-            {/* Информация о преподавателе */}
-            <div className="p-4 flex flex-col gap-1">
-                <h3 className="text-lg font-bold">{name}</h3>
-                <p className="text-blue-600">{mainSubject}</p>
-                <p className="text-yellow-500 justify-end">{rating}</p>
+      {/* Image */}
+      <div className="h-48 relative overflow-hidden">
+        <img
+          src={image}
+          alt={name}
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-                {/* Другие предметы */}
-                <div className="flex flex-wrap gap-2 mt-1">
-                    {otherSubjects.map((subj, idx) => (
-                        <span
-                            key={idx}
-                            className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
-                        >
-                            {subj}
-                        </span>
-                    ))}
-                </div>
+      {/* Content */}
+      <div className="p-5 space-y-3">
 
-                <p className="text-gray-500 mt-1">{experience} experience</p>
-                <p className="text-gray-500">{online ? "Online" : "Offline"}</p>
-                <p className="text-green-500">{available}</p>
-                
-                <div className="flex justify-between items-center mt-2">
-                    <span className="font-semibold">{price}</span>
-                    <button className="bg-cyan-600 text-white px-3 py-1 rounded hover:bg-cyan-700 transition-colors">
-                        Book Session
-                    </button>
-                </div>
+        {/* Name + Rating */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">
+              {name}
+            </h3>
+            <p className="text-sm text-gray-500">{subject}</p>
+          </div>
 
-                <p className="text-gray-500 text-sm mt-1 text-center">{reviews}</p>
-            </div>
+          <div className="text-sm font-medium text-yellow-500">
+            ⭐ {rating}
+          </div>
         </div>
+
+        {/* Subjects */}
+        <div className="flex flex-wrap gap-2 text-xs">
+          {subjects.slice(0, 2).map((subj, index) => (
+            <span
+              key={index}
+              className="bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full"
+            >
+              {subj}
+            </span>
+          ))}
+
+          {subjects.length > 2 && (
+            <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+              +{subjects.length - 2} more
+            </span>
+          )}
+        </div>
+
+        {/* Info */}
+        <div className="text-sm text-gray-600 space-y-1">
+          <p>{experience}</p>
+          <p>{format}</p>
+          <p className="text-green-600 font-medium">{availability}</p>
+        </div>
+
+        {/* Price */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+            <div className="flex items-center gap-1">
+                <span>₸</span>
+                <span className="font-semibold text-gray-900">
+                {price}
+                </span>
+                <span className="text-gray-600 text-sm">/hour</span>
+            </div>
+            <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition">
+                Book Session
+            </button>
+          </div>
+
+        <div className="flex items-center justify-center text-sm text-gray-500">
+        {reviewsCount} student reviews
+        </div>
+
+      </div>
+    </div>
     )
 }
