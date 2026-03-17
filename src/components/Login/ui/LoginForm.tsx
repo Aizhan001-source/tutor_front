@@ -49,7 +49,7 @@ export const LoginForm = () => {
         </div>
 
         <div className='relative -top-30 flex flex-col m-3 gap-3'>
-          <button type="submit" className='flex justify-center items-center bg-[#7cd4e2] border p-3 rounded-[10px] w-full text-white font-[700] transition duration-200 hover:bg-[#5fc1d1]'>
+          <button type="submit" className='flex justify-center items-center bg-[#7cd4e2] border p-3 rounded-[10px] w-full text-white font-xl transition duration-200 hover:bg-[#5fc1d1]'>
             Sign in
             <ArrowRightEndOnRectangleIcon className='w-5 h-5 pl-1' />
           </button>
