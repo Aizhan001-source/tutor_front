@@ -1,7 +1,7 @@
 import { Navbar } from "../BookSessions/ui/Navbar"
 import { Card } from "../BookSessions/ui/Card"
-import { Summary } from "./ui/Summary"
-import { Soon } from "./ui/Soon"
+import { Summary } from "./ui/Summary.tsx"
+import { Footer } from "./ui/Footer.tsx"
 
 export const BookSession=() => {
     return(
@@ -9,7 +9,7 @@ export const BookSession=() => {
             <Navbar/>
             <Card/>
             <Summary/>
-            <Soon/>
+            <Footer/>
         </div>
     )
 }

@@ -4,7 +4,7 @@ import { TutorCard } from "../Main/ui/TutorCard"
 
 import tutor1 from "../../assets/tutor1.jpeg"
 import { FaInstagram } from "react-icons/fa"
-import { Soon } from "./ui/Soon"
+import { Footer } from "./ui/Footer"
 
 const tutors = [
   {
@@ -110,7 +110,7 @@ export const MainPage=() => {
                     }
                 </div>
             </div>
-                    <Soon/>
+                    <Footer/>
         </div>
     )
 }
