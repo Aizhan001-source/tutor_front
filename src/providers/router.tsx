@@ -1,25 +1,23 @@
-// import { createBrowserRouter } from 'react-router-dom';
-// import { LoginPage } from '../components/Login/LoginPage';
-// import { MainPage } from '../components/Main/Main';
-// import { BookSession } from '../components/BookSessions/BookSes';
-
-
-// export const router = createBrowserRouter([
-//   { path: '/login', element: <LoginPage /> },
-//   { path: '/', element: <MainPage /> },
-//   { path: '/book-session', element: < BookSession/> },
-// ]);
-
 import { createBrowserRouter } from "react-router-dom";
 import MessagesPage from "../components/Message/Message";
+import { LoginPage } from "../components/Login/LoginPage";
+import { MainPage } from "../components/Main/Main";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/chat",
     element: <MessagesPage />,
   },
   {
     path: "/messages",
     element: <MessagesPage />,
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/",
+    element: <MainPage />,
   },
 ]);
