@@ -1,12 +1,9 @@
 import { api } from "../api";
 
-interface LoginData {
-  email: string;
-  password: string;
-}
 
-interface AuthResponse {
+interface LoginResponse {
   access_token: string;
+  user: 
 }
 
 export const authApi = {
