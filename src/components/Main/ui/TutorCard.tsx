@@ -1,37 +1,40 @@
 import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid"
 import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import type { Education } from "../../../types/education"
+import type { User } from "../../../types/user"
+import { useEffect } from "react"
 
 interface TutorCardProps {
-    image: string
-    name: string
-    subject: string
-    rating: number
-    subjects: string[]
-    experience: string
-    format: string
-    availability: string
-    price: number
-    reviewsCount: number
-    isFavorite?: boolean
+  id:string
+  bio:string
+  experience_years:number
+  education:Education
+  price_per_hour:number
+  currency:string
+  average_rating:number
+  total_reviews:number
+  // user:User
+  first_name: string
+  last_name: string
+  isFavorite?: boolean
   onToggleFavorite?: () => void
 }
 
 export const TutorCard = ({ 
-    image,
-    name,
-    subject,
-    rating,
-    subjects,
-    experience,
-    format,
-    availability,
-    price,
-    reviewsCount,
-    isFavorite = false,
+  id,
+  bio,
+  experience_years,
+  education,
+  price_per_hour,
+  currency,
+  average_rating,
+  total_reviews,
+  first_name,
+  last_name,
+  isFavorite = false,
   onToggleFavorite,
 }: TutorCardProps) => {
-
     const navigate = useNavigate()
 
     return(
@@ -40,8 +43,8 @@ export const TutorCard = ({
       {/* Image */}
       <div className="h-48 relative overflow-hidden">
         <img
-          src={image}
-          alt={name}
+          src={""}
+          alt={""}
           className="w-full h-full object-cover"
         />
         <button
@@ -61,40 +64,22 @@ export const TutorCard = ({
         {/* Name + Rating */}
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              {name}
-            </h3>
-            <p className="text-sm text-gray-500">{subject}</p>
+            <Link to={`/tutors/${id}`} className="text-lg font-semibold text-gray-900">
+              {first_name} {last_name}
+            </Link>
+            <p className="text-sm text-gray-500">{""}</p>
           </div>
 
           <div className="text-sm font-medium text-yellow-500">
-            ⭐ {rating}
+            ⭐ {average_rating}
           </div>
         </div>
 
-        {/* Subjects */}
-        <div className="flex flex-wrap gap-2 text-xs">
-          {subjects.slice(0, 2).map((subj, index) => (
-            <span
-              key={index}
-              className="bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full"
-            >
-              {subj}
-            </span>
-          ))}
-
-          {subjects.length > 2 && (
-            <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-              +{subjects.length - 2} more
-            </span>
-          )}
-        </div>
 
         {/* Info */}
         <div className="text-sm text-gray-600 space-y-1">
-          <p>{experience}</p>
-          <p>{format}</p>
-          <p className="text-green-600 font-medium">{availability}</p>
+          <p>{experience_years}</p>
+          <p className="text-green-600 font-medium">{total_reviews}</p>
         </div>
 
         {/* Price */}
@@ -102,7 +87,7 @@ export const TutorCard = ({
             <div className="flex items-center gap-1">
                 <span>₸</span>
                 <span className="font-semibold text-gray-900">
-                {price}
+                {currency}
                 </span>
                 <span className="text-gray-600 text-sm">/hour</span>
             </div>
@@ -115,7 +100,7 @@ export const TutorCard = ({
           </div>
 
         <div className="flex items-center justify-center text-sm text-gray-500">
-        {reviewsCount} student reviews
+        {total_reviews} student reviews
         </div>
 
       </div>

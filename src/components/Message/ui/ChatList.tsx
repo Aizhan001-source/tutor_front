@@ -1,62 +1,42 @@
-import React, { useState, useEffect } from "react";
-import tutor1 from "../../../assets/tutor1.jpeg";
-import tutor2 from "../../../assets/tutor2.jpeg";
-import tutor3 from "../../../assets/tutor3.jpeg";
-import { ChatListItem } from "./ChatListItem";
+import React, { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import type { User, Message } from "./MessagesLayout";
+import type { ChatPreview } from "../../../api/messages/messageApi";
 
 interface Props {
-  setActiveUser: (user: User) => void;
-  activeUser: User | null;
-  messagesByUser: Record<number, Message[]>;
+  chats: ChatPreview[];
+  activeUserId: string | null;
+  onSelectUser: (userId: string) => void;
 }
 
-export const ChatList = ({ setActiveUser, activeUser, messagesByUser }: Props) => {
+export const ChatList = ({ chats, activeUserId, onSelectUser }: Props) => {
   const [search, setSearch] = useState("");
-  const [unreadByUser, setUnreadByUser] = useState<Record<number, number>>({
-    1: 2,
-    2: 1,
-    3: 3,
+
+  const storedUserId = localStorage.getItem("user_id");
+
+  const filteredChats = chats.filter((chat) => {
+    const name =
+      `${chat.sender.first_name} ${chat.sender.last_name} ` +
+      `${chat.receiver.first_name} ${chat.receiver.last_name}`;
+
+    return name.toLowerCase().includes(search.toLowerCase());
   });
 
-  const onlineUsers: number[] = [1, 3]; // кто в сети
+  const getOtherUser = (chat: ChatPreview) => {
+    return chat.sender_id === storedUserId ? chat.receiver : chat.sender;
+  };
 
-  const chats: User[] = [
-    { id: 1, name: "Sarah Johnson", avatar: tutor1 },
-    { id: 2, name: "Michael Chen", avatar: tutor2 },
-    { id: 3, name: "Emily Rodriguez", avatar: tutor3 },
-  ];
-
-  const filteredChats = chats.filter((chat) =>
-    chat.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  useEffect(() => {
-    if (activeUser && unreadByUser[activeUser.id]) {
-      setUnreadByUser((prev) => ({ ...prev, [activeUser.id]: 0 }));
-    }
-  }, [activeUser]);
-
-  const formatChatDate = (messageDate: string) => {
-    const date = new Date(messageDate);
-    const today = new Date();
-
-    if (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    ) {
-      return "Сегодня";
-    }
-
-    return date.toLocaleDateString("ru-RU", { day: "2-digit", month: "short" });
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
     <div className="w-[400px] border-r border-gray-200 p-5 flex flex-col gap-5">
       <h2 className="text-xl font-bold">Сообщения</h2>
 
+      {/* SEARCH */}
       <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-xl focus-within:ring-2 focus-within:ring-black transition">
         <MagnifyingGlassIcon className="w-5 h-5 text-gray-500" />
         <input
@@ -68,35 +48,66 @@ export const ChatList = ({ setActiveUser, activeUser, messagesByUser }: Props) =
         />
       </div>
 
-      <div className="border-b border-gray-300"></div>
+      <div className="border-b border-gray-300" />
 
-      <div className="flex flex-col gap-2 mt-2 overflow-y-auto">
-        {filteredChats.length > 0 ? (
+      {/* CHATS */}
+      <div className="flex flex-col gap-2 overflow-y-auto">
+        {filteredChats.length === 0 ? (
+          <p className="text-sm text-gray-400">Нет диалогов</p>
+        ) : (
           filteredChats.map((chat) => {
-            const messages = messagesByUser[chat.id] || [];
-            const lastMessageObj = messages.slice(-1)[0];
-            const lastMessageText = lastMessageObj?.text || "";
-            const lastMessageTime = lastMessageObj?.time || "";
-            const lastMessageDate = lastMessageObj?.date
-              ? formatChatDate(lastMessageObj.date)
-              : "12 Mar"; // дефолт для старых сообщений
+            const other = getOtherUser(chat);
+            const isActive = activeUserId === other.id;
 
             return (
-              <ChatListItem
+              <div
                 key={chat.id}
-                avatar={chat.avatar}
-                name={chat.name}
-                lastMessage={lastMessageText}
-                onClick={() => setActiveUser(chat)}
-                unread={unreadByUser[chat.id]}
-                isActive={activeUser?.id === chat.id}
-                isOnline={onlineUsers.includes(chat.id)}
-                date={lastMessageDate}
-              />
+                onClick={() => onSelectUser(other.id)}
+                className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition ${
+                  isActive
+                    ? "bg-indigo-50 border border-indigo-200"
+                    : "hover:bg-gray-50"
+                }`}
+              >
+                {/* AVATAR */}
+                <div className="relative">
+                  {other.avatar_url ? (
+                    <img
+                      src={other.avatar_url}
+                      className="w-11 h-11 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-11 h-11 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 font-semibold">
+                      {other.first_name?.[0]}
+                      {other.last_name?.[0]}
+                    </div>
+                  )}
+
+                  {/* unread indicator */}
+                  {!chat.is_read && chat.receiver_id === storedUserId && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-600 rounded-full" />
+                  )}
+                </div>
+
+                {/* INFO */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-sm text-gray-900">
+                      {other.first_name} {other.last_name}
+                    </span>
+
+                    <span className="text-xs text-gray-400">
+                      {formatTime(chat.created_at)}
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-gray-500 truncate">
+                    {chat.content}
+                  </p>
+                </div>
+              </div>
             );
           })
-        ) : (
-          <p className="text-sm text-gray-400">Ничего не найдено</p>
         )}
       </div>
     </div>

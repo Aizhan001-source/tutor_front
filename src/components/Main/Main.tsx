@@ -32,25 +32,24 @@ export const MainPage = () => {
           <p>Loading...</p>
         ) : (
           <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tutors.map((tutor: { id: Key | null | undefined; user: { first_name: string; last_name: string; avatar_url: string }; education: string; average_rating: any; experience_years: any; format: string; price_per_hour: any; total_reviews: number; }) => (
+            {tutors.map((tutor) => (
               <TutorCard
-                key={tutor.id}
-                image={tutor.user.avatar_url} // потом заменишь
-                name={`${tutor.user.first_name} ${tutor.user.last_name}`}
-                subject={tutor.education}
-                rating={Number(tutor.average_rating)}
-                subjects={[tutor.education]}
-                experience={`${tutor.experience_years} years experience`}
-                format={tutor.format}
-                availability="Available"
-                price={Number(tutor.price_per_hour)}
-                reviewsCount={tutor.total_reviews}
+                id={tutor.id}
+                bio={tutor.bio}
+                experience_years={tutor.experience_years}
+                education={tutor.education}
+                price_per_hour={tutor.price_per_hour}
+                currency={tutor.currency}
+                average_rating={tutor.average_rating}
+                total_reviews={tutor.total_reviews}
+                first_name={tutor.user.first_name}
+                last_name={tutor.user.last_name}
+                isFavorite={false}
               />
             ))}
           </div>
         )}
       </div>
-
       <Soon />
     </div>
   );

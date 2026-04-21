@@ -15,11 +15,9 @@ export const LoginForm = () => {
     e.preventDefault();
 
     await login(email, password);
-
-    // ✅ проверка — только если токен появился
-    const newToken = localStorage.getItem('token');
-    if (newToken) {
-      navigate('/dashboard');
+    
+    if (token) {
+      navigate('/');
     }
   };
 
