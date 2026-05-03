@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://localhost:8000", // поменяй на свой API
+  baseURL: "http://localhost:8000/api", // поменяй на свой API
 });
 
 // 👉 автоматически добавляем токен

@@ -1,11 +1,4 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import Student from "./pages/Student";
-import Tutor from "./pages/Tutor";
-import "./styles/main.css";
+import { BookSession } from "../components/BookSessions/BookSes";
 
 function App() {
   return (
@@ -16,11 +9,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/student" element={<Student />} />
           <Route path="/tutor" element={<Tutor />} />
+
+          <Route path="/book-session/:id" element={<BookSession />} />
         </Routes>
       </main>
       <Footer />
     </Router>
   );
 }
-
-export default App;

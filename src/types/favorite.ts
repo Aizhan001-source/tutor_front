@@ -1,8 +1,12 @@
+import type { Education } from "./education";
+
 export interface Favorite {
-  id: number;
+  id: string;
+
+  course_id?: string;
 
   tutor: {
-    id: number;
+    id: string;
 
     user: {
       first_name: string;
@@ -10,11 +14,10 @@ export interface Favorite {
       avatar_url: string;
     };
 
-    education: string;
-    average_rating: number;
-    experience_years: number;
-    format: string;
-    price_per_hour: number;
-    total_reviews: number;
+    education?: Education;
+
+    average_rating?: number;
+    experience_years?: number;
+    price_per_hour?: number;
   };
 }

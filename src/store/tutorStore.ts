@@ -1,39 +1,55 @@
 import { create } from "zustand";
-import { api } from "../api/api";
-
-interface Tutor {
-  id: string;
-  user: {
-    first_name: string;
-    last_name: string;
-    avatar_url: string;
-  };
-  education: string;
-  average_rating: number;
-  experience_years: number;
-  format: string;
-  price_per_hour: number;
-  total_reviews: number;
-}
+import { tutorApi, type Tutor } from "../api/tutorApi";
 
 interface TutorState {
   tutors: Tutor[];
+  tutor: Tutor | null;
   isLoading: boolean;
+  error: string | null;
+
   fetchTutors: () => Promise<void>;
+  fetchTutorById: (id: string) => Promise<void>;
 }
 
 export const useTutorStore = create<TutorState>((set) => ({
   tutors: [],
+  tutor: null,
   isLoading: false,
+  error: null,
 
   fetchTutors: async () => {
-    set({ isLoading: true });
-
     try {
-      const res = await api.get("/tutors");
-      set({ tutors: res.data, isLoading: false });
-    } catch (error) {
-      set({ isLoading: false });
+      set({ isLoading: true, error: null });
+
+      const data = await tutorApi.getAll();
+
+      set({
+        tutors: data,
+        isLoading: false,
+      });
+    } catch (e: any) {
+      set({
+        error: e.message || "Error fetching tutors",
+        isLoading: false,
+      });
     }
   },
+
+  fetchTutorById: async (tutorId: string) => {
+    try {
+      set({isLoading: true});
+
+    const data = await tutorApi.getById(tutorId);
+
+    set({
+      tutor: data,
+      isLoading: false
+    })
+    } catch (e: any) {
+      set({
+        error: e.message || "Error fetching tutor",
+        isLoading: false,
+      });
+    }
+  }
 }));

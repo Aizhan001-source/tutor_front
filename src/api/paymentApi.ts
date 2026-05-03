@@ -1,19 +1,17 @@
-import { apiClientWithAuth } from "./axios";
+import { api } from "./axios";
 import type { Payment } from "../types/payment";
 
 export const paymentApi = {
-  getMyPayments: async (): Promise<Payment[]> => {
-    const res = await apiClientWithAuth.get("/payments/me");
+  getAll: async (): Promise<Payment[]> => {
+    const res = await api.get("/payments/");
     return res.data;
+
   },
 
-  pay: async (bookingId: string): Promise<Payment> => {
-    const res = await apiClientWithAuth.post(`/payments/${bookingId}/pay`);
+  getById: async (paymentId: string): Promise<Payment> => {
+    const res = await api.get(`/payments/${paymentId}`);
     return res.data;
+
   },
 
-  refund: async (paymentId: string): Promise<Payment> => {
-    const res = await apiClientWithAuth.post(`/payments/${paymentId}/refund`);
-    return res.data;
-  },
 };

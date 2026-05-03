@@ -1,43 +1,36 @@
-import { useFavoriteStore } from "../../store/favoriteStore";
-import { TutorCard } from "../Main/ui/TutorCard";
+import { Navbar } from "../Payments/ui/Navbar"
+import { Footer } from "../Payments/ui/Footer"
+import { Page } from "../Favorites/ui/Page"
+import { HeartIcon } from "@heroicons/react/16/solid"
 
-export const FavoritesPage = () => {
-  const favorites = useFavoriteStore((state) => state.favorites);
-  const removeFavorite = useFavoriteStore((state) => state.removeFavorite);
+export const FavoritesPage=() => {
+    
+    return(
+        <main className="flex-1">
+            <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100">
+                <Navbar/>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="mb-8">
+                        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+                            Favorite Tutors
+                        </h1>
+                        <p className="text-gray-600 text-lg">
+                            Quick access to your saved tutors
+                        </p>
+                    </div>
 
-  return (
-    <div className="min-h-screen p-6 bg-gray-50">
-      <h1 className="text-2xl font-bold mb-6">❤️ Favorites</h1>
+                    <div className="mb-6">
+                        <div className="inline-flex items-center gap-2 bg-white rounded-lg shadow-md px-4 py-3">
+                            <HeartIcon className=" text-red-600 w-6 h-6"/>
+                            <span className="font-semibold text-gray-900">3</span>
+                            <span className="text-gray-600">Favorites</span>
+                        </div>
+                    </div>
+                </div>
 
-      {favorites.length === 0 ? (
-        <p className="text-gray-500">No favorites yet</p>
-      ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {favorites.map((tutor: any) => (
-            <div key={tutor.id} className="relative">
-              <TutorCard
-                image={tutor.user?.avatar_url}
-                name={`${tutor.user?.first_name} ${tutor.user?.last_name}`}
-                subject={tutor.education}
-                rating={Number(tutor.average_rating)}
-                subjects={[tutor.education]}
-                experience={`${tutor.experience_years} years`}
-                format={tutor.format}
-                availability="Available"
-                price={Number(tutor.price_per_hour)}
-                reviewsCount={tutor.total_reviews}
-              />
-
-              <button
-                onClick={() => removeFavorite(tutor.id)}
-                className="absolute top-2 right-2 bg-white px-2 py-1 text-red-500"
-              >
-                ✖
-              </button>
+                <Page/>
+                <Footer/>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+        </main>
+    )
+}

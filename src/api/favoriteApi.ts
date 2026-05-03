@@ -1,23 +1,18 @@
 import { api } from "./api";
-import type { Favorite } from "../types/favorite";
 
 export const favoriteApi = {
-  // получить избранное
-  getFavorites: async (): Promise<Favorite[]> => {
-    const res = await api.get("/favorites");
+  getFavorites: async () => {
+    const res = await api.get("/favorites"); // ❗ без /api
     return res.data;
   },
 
-  // добавить в избранное
-  addFavorite: async (tutorId: number): Promise<Favorite> => {
-    const res = await api.post("/favorites", {
-      tutor_id: tutorId,
-    });
+  addFavorite: async (tutorId: string) => {
+    const res = await api.post(`/favorites/${tutorId}`); // ❗ без /api
     return res.data;
   },
 
-  // удалить из избранного
-  removeFavorite: async (id: number): Promise<void> => {
-    await api.delete(`/favorites/${id}`);
+  removeFavorite: async (tutorId: string) => {
+    const res = await api.delete(`/favorites/${tutorId}`);
+    return res.data;
   },
 };

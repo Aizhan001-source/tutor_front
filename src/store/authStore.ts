@@ -1,28 +1,17 @@
 import { create } from "zustand";
 import { authApi } from "../api/authApi";
 
-interface User {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-}
-
 interface AuthState {
-  user: User | null;
   token: string | null;
-
   isLoading: boolean;
   error: string | null;
 
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: JSON.parse(localStorage.getItem("user") || "null"),
   token: localStorage.getItem("token"),
-
   isLoading: false,
   error: null,
 
@@ -30,38 +19,28 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ isLoading: true, error: null });
 
-      const { access_token, user } = await authApi.login({
-        email,
-        password,
-      });
+      const res = await authApi.loginApi({ email, password });
 
-      localStorage.setItem("token", access_token);
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", res.access_token);
 
       set({
-        token: access_token,
-        user,
-        isLoading: false,
-      });
-    } catch (error: any) {
-      set({
-        error: error.response?.data?.detail || "Ошибка входа",
+        token: res.access_token,
         isLoading: false,
       });
 
-      throw error;
+      return true;
+    } catch (e: any) {
+      set({
+        error: e.response?.data?.detail || "Login error",
+        isLoading: false,
+      });
+
+      return false;
     }
   },
 
   logout: () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
-    set({
-      token: null,
-      user: null,
-      error: null,
-      isLoading: false,
-    });
+    set({ token: null });
   },
 }));

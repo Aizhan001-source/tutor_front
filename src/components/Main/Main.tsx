@@ -4,61 +4,85 @@ import { useFavoriteStore } from "../../store/favoriteStore";
 import { Navbar } from "./ui/Navbar";
 import { Filter } from "./ui/Filter";
 import { TutorCard } from "./ui/TutorCard";
+import { Footer } from "../Main/ui/Footer";
 
 export const MainPage = () => {
-  const tutors = useTutorStore((state) => state.tutors);
-  const fetchTutors = useTutorStore((state) => state.fetchTutors);
-  const isLoading = useTutorStore((state) => state.isLoading);
+  const { tutors, fetchTutors, isLoading } = useTutorStore();
 
-  // ⭐ ВОТ ТУТ правильно
-  const addFavorite = useFavoriteStore((state) => state.addFavorite);
+  const {
+    favorites,
+    fetchFavorites,
+    addFavorite,
+    removeFavorite,
+  } = useFavoriteStore();
 
   useEffect(() => {
     fetchTutors();
-  }, [fetchTutors]);
+    fetchFavorites();
+  }, []);
+
+  // ✅ ONLY ONE FUNCTION (OUTSIDE MAP)
+  const toggleFavorite = async (tutorId: string) => {
+    const isFav = favorites?.some(
+      (f) => f.course_id === tutorId
+    );
+
+    if (isFav) {
+      await removeFavorite(tutorId);
+    } else {
+      await addFavorite(tutorId);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-6 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
+
       <Navbar />
       <Filter />
 
-      <div className="max-w-7xl mx-auto mt-6">
-        <div className="mb-4 text-gray-600">
-          Showing <b>{tutors.length}</b> tutors
+      <div className="max-w-7xl mx-auto">
+
+        <div className="mb-6 text-gray-600">
+          Showing <span className="font-semibold">{tutors.length}</span> tutors
         </div>
 
         {isLoading ? (
           <p>Loading...</p>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tutors.map((tutor: any) => (
-              <div key={tutor.id} className="relative">
-                
-                <TutorCard
-                  image={tutor.user?.avatar_url}
-                  name={`${tutor.user?.first_name} ${tutor.user?.last_name}`}
-                  subject={tutor.education}
-                  rating={Number(tutor.average_rating)}
-                  subjects={[tutor.education]}
-                  experience={`${tutor.experience_years} years`}
-                  format={tutor.format}
-                  availability="Available"
-                  price={Number(tutor.price_per_hour)}
-                  reviewsCount={tutor.total_reviews}
-                />
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                {/* ⭐ кнопка избранного */}
-                <button
-                  onClick={() => addFavorite(tutor)}
-                  className="absolute top-2 right-2 bg-white shadow px-3 py-1 rounded-full text-red-500"
-                >
-                  ❤️
-                </button>
-              </div>
-            ))}
+            {tutors.map((tutor) => {
+
+              // ✅ FAVORITE CHECK (FIXED)
+              const isFavorite = favorites?.some(
+                (f) => f.course_id === tutor.id
+              );
+
+              return (
+                <TutorCard
+                  key={tutor.id}
+                  id={tutor.id}
+                  bio={tutor.bio}
+                  experience_years={tutor.experience_years}
+                  education={tutor.education}
+                  price_per_hour={tutor.price_per_hour}
+                  currency={tutor.currency}
+                  average_rating={tutor.average_rating}
+                  total_reviews={tutor.total_reviews}
+                  first_name={tutor.user.first_name}
+                  last_name={tutor.user.last_name}
+                  isFavorite={isFavorite}
+                  onToggleFavorite={() => toggleFavorite(tutor.id)} // 🔥 ВАЖНО
+                />
+              );
+            })}
+
           </div>
         )}
+
       </div>
+
+      <Footer />
     </div>
   );
 };

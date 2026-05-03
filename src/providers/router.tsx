@@ -1,39 +1,39 @@
 import { createBrowserRouter } from "react-router-dom";
-import MessagesPage from "../components/Message/Message";
 import { LoginPage } from "../components/Login/LoginPage";
-import { MainPage } from "../components/Main/Main";
 import { FavoritesPage } from "../components/Favorites/FavoritePage";
-import { BookSession } from "../components/BookSessions/BookSes";
-import { SettingsPage } from "../components/Settings/SettingPage";
+import { Payment } from "../components/Payments/Pay";
+import { TutorIndex } from "../components/Tutor/Index";
+import { Booking } from "../components/Booking/Book";
+import { MainPage } from "../components/Main/Main";
+import { ProtectedRoute } from "../components/protected/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage />,
+    element: (
+      <ProtectedRoute>
+        <MainPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/booking",
+    element: <Booking />,
+  },
+  {
+    path: "/payment",
+    element: <Payment />,
   },
   {
     path: "/login",
     element: <LoginPage />,
   },
   {
-    path: "/messages",
-    element: <MessagesPage />,
-  },
-  {
-    path: "/chat",
-    element: <MessagesPage />,
-  },
-  {
     path: "/favorites",
     element: <FavoritesPage />,
   },
   {
-    path: "/book_session",
-    element: <BookSession />,
+    path: "/tutors/:id",
+    element: <TutorIndex />,
   },
-
-  {
-    path: "/settings",
-    element: <SettingsPage />,
-  }
 ]);

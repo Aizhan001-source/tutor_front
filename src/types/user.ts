@@ -1,24 +1,34 @@
 export interface User {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
+    id: string
+    first_name: string
+    last_name: string
+    email: string
 }
 
 export interface UserCreate {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
+    id: string
+    first_name: string
+    last_name: string
+    email: string
+    password: string
 }
 
 export interface UserLogin {
-  email: string;
-  password: string;
+    email: string
+    password: string
 }
 
 export interface TokenResponse {
-  user: User;
-  access_token: string;
-  token_type: string;
+    user: User
+    access_token: string
+    token_type: string
+}
+
+export interface UserProfile {
+    first_name: string
+    last_name: string
+    email: string
+    avatarUrl?: string
+    oldPassword?: string | null
+    newPassword?: string | null
 }

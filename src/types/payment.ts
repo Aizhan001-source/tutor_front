@@ -3,6 +3,6 @@ export interface Payment {
   booking_id: string;
   amount: number;
   currency: string;
-  status: "pending" | "paid" | "failed" | "refunded";
+  status: "pending" | "completed" | "failed" | "refunded";
   created_at: string;
 }
