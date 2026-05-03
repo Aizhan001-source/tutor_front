@@ -1,5 +1,9 @@
 import { create } from "zustand";
-import { messageApi, type MessageRead, type ChatPreview } from "../../api/messages/messageApi";
+import {
+  messageApi,
+  type MessageRead,
+  type ChatPreview,
+} from "../../api/messages/messageApi";
 
 interface MessageState {
   chats: ChatPreview[];
@@ -22,7 +26,7 @@ export const useMessageStore = create<MessageState>((set, get) => ({
   error: null,
 
   setActiveUser: (userId) => {
-    set({ activeUserId: userId });
+    set({ activeUserId: userId, messages: [] });
     get().fetchConversation(userId);
   },
 
@@ -32,7 +36,10 @@ export const useMessageStore = create<MessageState>((set, get) => ({
       const chats = await messageApi.getMyChats();
       set({ chats, isLoading: false });
     } catch (e: any) {
-      set({ error: e.response?.data?.detail || "Ошибка загрузки чатов", isLoading: false });
+      set({
+        error: e.response?.data?.detail || "Ошибка загрузки чатов",
+        isLoading: false,
+      });
     }
   },
 
@@ -42,16 +49,23 @@ export const useMessageStore = create<MessageState>((set, get) => ({
       const messages = await messageApi.getConversation(otherUserId);
       set({ messages, isLoading: false });
     } catch (e: any) {
-      set({ error: e.response?.data?.detail || "Ошибка загрузки сообщений", isLoading: false });
+      set({
+        error: e.response?.data?.detail || "Ошибка загрузки сообщений",
+        isLoading: false,
+      });
     }
   },
 
   sendMessage: async (receiverId, content) => {
     try {
       const newMsg = await messageApi.sendMessage(receiverId, content);
-      set((state) => ({ messages: [...state.messages, newMsg] }));
+      set((state) => ({
+        messages: [...state.messages, newMsg],
+      }));
     } catch (e: any) {
-      set({ error: e.response?.data?.detail || "Ошибка отправки" });
+      set({
+        error: e.response?.data?.detail || "Ошибка отправки",
+      });
     }
   },
 }));

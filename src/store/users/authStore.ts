@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import { authApi } from "../../api/users/authApi";
+import type { User } from "../../types/user";
 
 interface AuthState {
+  user: User | null;
   token: string | null;
   isLoading: boolean;
   error: string | null;
@@ -11,6 +13,7 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
   token: localStorage.getItem("token"),
   isLoading: false,
   error: null,
@@ -19,17 +22,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ isLoading: true, error: null });
 
-      const res = await authApi.loginApi({ email, password });
+      const data = await authApi.login({ email, password });
 
-      localStorage.setItem("token", res.access_token);
+      localStorage.setItem("token", data.access_token);
 
       set({
-        token: res.access_token,
+        user: data.user,
+        token: data.access_token,
         isLoading: false,
       });
-    } catch (e: any) {
+    } catch (err: any) {
       set({
-        error: e.response?.data?.message || "Login error",
+        error: err?.response?.data?.detail || "Login failed",
         isLoading: false,
       });
     }
@@ -37,6 +41,6 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logout: () => {
     localStorage.removeItem("token");
-    set({ token: null });
+    set({ user: null, token: null });
   },
 }));
