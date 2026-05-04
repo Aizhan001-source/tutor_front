@@ -1,13 +1,17 @@
 import { ArrowLeftIcon, CurrencyDollarIcon, DevicePhoneMobileIcon, LockClosedIcon } from "@heroicons/react/24/outline"
 import { CreditCardIcon } from "@heroicons/react/24/outline"
+import { useNavigate } from "react-router-dom";
 
 export const Card=() => {
+    const navigate = useNavigate();
     return(
         <main className="flex-l">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2 font-medium">
-                    <ArrowLeftIcon 
-                    className="w-5 h-6"/>
+                <button
+                    onClick={() => navigate(-1)}
+                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2 font-medium"
+                    >
+                    <ArrowLeftIcon className="w-5 h-6" />
                     Back
                 </button>
                 <div className="mb-8">

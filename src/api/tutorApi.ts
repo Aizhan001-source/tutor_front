@@ -29,3 +29,9 @@ export const tutorApi = {
     return res.data;
   }
 };
+
+
+export const searchTutorApi = async (searchWord: string): Promise<Tutor[]> => {
+  const response = await api.get(`/tutor/search?search_word=${searchWord}`)
+  return response.data
+}

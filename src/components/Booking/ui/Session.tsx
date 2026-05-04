@@ -49,61 +49,24 @@ export const Session = ({ setDate }: { setDate: (date: string) => void }) => {
 
             <div className="grid grid-cols-7 gap-3">
 
-              <button
-                onClick={() => setDate("2026-02-23")}
-                className="p-4 rounded-xl text-center transition-all duration-200 bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg scale-105"
-              >
-                <div className="text-xs font-medium mb-1 opacity-80">Thu</div>
-                <div className="text-xl font-bold">23</div>
-              </button>
-
-              <button
-                onClick={() => setDate("2026-02-24")}
-                className="p-4 rounded-xl text-center transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-gray-700"
-              >
-                <div className="text-xs font-medium mb-1 opacity-80">Fri</div>
-                <div className="text-xl font-bold">24</div>
-              </button>
-
-              <button
-                onClick={() => setDate("2026-02-25")}
-                className="p-4 rounded-xl text-center transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-gray-700"
-              >
-                <div className="text-xs font-medium mb-1 opacity-80">Sat</div>
-                <div className="text-xl font-bold">25</div>
-              </button>
-
-              <button
-                onClick={() => setDate("2026-02-26")}
-                className="p-4 rounded-xl text-center transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-gray-700"
-              >
-                <div className="text-xs font-medium mb-1 opacity-80">Sun</div>
-                <div className="text-xl font-bold">26</div>
-              </button>
-
-              <button
-                onClick={() => setDate("2026-02-27")}
-                className="p-4 rounded-xl text-center transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-gray-700"
-              >
-                <div className="text-xs font-medium mb-1 opacity-80">Mon</div>
-                <div className="text-xl font-bold">27</div>
-              </button>
-
-              <button
-                onClick={() => setDate("2026-02-28")}
-                className="p-4 rounded-xl text-center transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-gray-700"
-              >
-                <div className="text-xs font-medium mb-1 opacity-80">Tue</div>
-                <div className="text-xl font-bold">28</div>
-              </button>
-
-              <button
-                onClick={() => setDate("2026-03-01")}
-                className="p-4 rounded-xl text-center transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-gray-700"
-              >
-                <div className="text-xs font-medium mb-1 opacity-80">Wed</div>
-                <div className="text-xl font-bold">29</div>
-              </button>
+              {[
+                { day: "Thu", date: "2026-02-23", num: 23 },
+                { day: "Fri", date: "2026-02-24", num: 24 },
+                { day: "Sat", date: "2026-02-25", num: 25 },
+                { day: "Sun", date: "2026-02-26", num: 26 },
+                { day: "Mon", date: "2026-02-27", num: 27 },
+                { day: "Tue", date: "2026-02-28", num: 28 },
+                { day: "Wed", date: "2026-03-01", num: 1 }, // фикс
+              ].map((d, i) => (
+                <button
+                  key={i}
+                  onClick={() => setDate(d.date)}
+                  className="p-4 rounded-xl text-center transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-gray-700"
+                >
+                  <div className="text-xs font-medium mb-1 opacity-80">{d.day}</div>
+                  <div className="text-xl font-bold">{d.num}</div>
+                </button>
+              ))}
 
             </div>
           </div>
@@ -112,4 +75,4 @@ export const Session = ({ setDate }: { setDate: (date: string) => void }) => {
       </div>
     </div>
   );
-};ц
+};

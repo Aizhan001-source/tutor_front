@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { tutorApi, type Tutor } from "../api/tutorApi";
+import { searchTutorApi, tutorApi, type Tutor } from "../api/tutorApi";
 
 interface TutorState {
   tutors: Tutor[];
@@ -9,6 +9,7 @@ interface TutorState {
 
   fetchTutors: () => Promise<void>;
   fetchTutorById: (id: string) => Promise<void>;
+  searchTutors: (word: string) => Promise<void>;
 }
 
 export const useTutorStore = create<TutorState>((set) => ({
@@ -37,19 +38,37 @@ export const useTutorStore = create<TutorState>((set) => ({
 
   fetchTutorById: async (tutorId: string) => {
     try {
-      set({isLoading: true});
+      set({ isLoading: true });
 
-    const data = await tutorApi.getById(tutorId);
+      const data = await tutorApi.getById(tutorId);
 
-    set({
-      tutor: data,
-      isLoading: false
-    })
+      set({
+        tutor: data,
+        isLoading: false,
+      });
     } catch (e: any) {
       set({
         error: e.message || "Error fetching tutor",
         isLoading: false,
       });
     }
-  }
+  },
+
+  searchTutors: async (word: string) => {
+    set({ isLoading: true });
+
+    try {
+      const data = await searchTutorApi(word);
+
+      set({
+        tutors: data,
+        isLoading: false,
+      });
+    } catch (e: any) {
+      set({
+        error: e.message || "Error searching tutors",
+        isLoading: false,
+      });
+    }
+  },
 }));

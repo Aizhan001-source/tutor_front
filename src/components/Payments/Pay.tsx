@@ -1,7 +1,7 @@
-import { Navbar } from "../Payments/ui/Navbar"
+import { Navbar } from "../Main/ui/Navbar"
 import { Card } from "../Payments/ui/Card"
-import { Summary } from "./ui/Summary.tsx"
-import { Footer } from "./ui/Footer.tsx"
+import { Summary } from "./ui/Summary"
+import { Footer } from "../Main/ui/Footer"
 
 export const Payment=() => {
     

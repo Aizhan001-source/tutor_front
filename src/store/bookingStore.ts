@@ -9,9 +9,10 @@ interface BookingState {
 
   getMyBookings: () => Promise<void>;
   createBooking: (data: BookingCreate) => Promise<void>;
+  refresh: () => Promise<void>;
 }
 
-export const useBookingStore = create<BookingState>((set, get) => ({
+export const useBookingStore = create<BookingState>((set) => ({
   bookings: [],
   loading: false,
   error: null,
@@ -20,32 +21,35 @@ export const useBookingStore = create<BookingState>((set, get) => ({
     set({ loading: true, error: null });
 
     try {
-      const data = await bookingApi.getMy();
-      set({ bookings: data });
+      const bookings = await bookingApi.getMy();
+      set({ bookings });
+    } catch (err: any) {
+      set({ error: err?.response?.data?.detail || "Failed to load bookings" });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  createBooking: async (data: BookingCreate) => {
+    set({ loading: true, error: null });
+
+    try {
+      const newBooking = await bookingApi.create(data);
+
+      set((state) => ({
+        bookings: [newBooking, ...state.bookings],
+      }));
     } catch (err: any) {
       set({
-        error: err?.response?.data?.detail || "Error loading bookings",
+        error: err?.response?.data?.detail || "Failed to create booking",
       });
     } finally {
       set({ loading: false });
     }
   },
 
-  createBooking: async (data) => {
-    set({ loading: true, error: null });
-
-    try {
-      const newBooking = await bookingApi.create(data);
-
-      set({
-        bookings: [newBooking, ...get().bookings],
-      });
-    } catch (err: any) {
-      set({
-        error: err?.response?.data?.detail || "Error creating booking",
-      });
-    } finally {
-      set({ loading: false });
-    }
+  refresh: async () => {
+    const bookings = await bookingApi.getMy();
+    set({ bookings });
   },
 }));

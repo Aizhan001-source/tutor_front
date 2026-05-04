@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/booking",
+    path: "/booking/:id",
     element: <Booking />,
   },
   {

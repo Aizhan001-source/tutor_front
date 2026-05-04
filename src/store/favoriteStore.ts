@@ -2,59 +2,69 @@ import { create } from "zustand";
 import { favoriteApi } from "../api/favoriteApi";
 import type { Favorite } from "../types/favorite";
 
+import toast from "react-hot-toast";
+
 interface FavoriteState {
   favorites: Favorite[];
   loading: boolean;
-  error: string | null;
 
   fetchFavorites: () => Promise<void>;
   addFavorite: (tutorId: string) => Promise<void>;
   removeFavorite: (tutorId: string) => Promise<void>;
+
+  isFavorite: (tutorId: string) => boolean;
 }
 
-export const useFavoriteStore = create<FavoriteState>((set) => ({
+export const useFavoriteStore = create<FavoriteState>((set, get) => ({
   favorites: [],
   loading: false,
-  error: null,
 
+  // GET ALL
   fetchFavorites: async () => {
     set({ loading: true });
-
     try {
-      const data = await favoriteApi.getFavorites();
-      set({ favorites: data });
-    } catch (err: any) {
-      set({ error: err?.response?.data?.detail });
+      const res = await favoriteApi.getFavorites();
+      set({ favorites: res });
     } finally {
       set({ loading: false });
     }
   },
 
+  // ADD
   addFavorite: async (tutorId: string) => {
-    set({ loading: true });
-
     try {
-      await favoriteApi.addFavorite(tutorId);
+      const res = await favoriteApi.addFavorite(tutorId);
+      toast.success(res.message); // 🔥 ВАЖНО
+      // обновляем список сразу
 
-      const updated = await favoriteApi.getFavorites();
-
-      set({ favorites: updated });
-    } finally {
-      set({ loading: false });
+      await get().fetchFavorites();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Error");
     }
   },
 
+  // REMOVE
   removeFavorite: async (tutorId: string) => {
-    set({ loading: true });
-
     try {
       await favoriteApi.removeFavorite(tutorId);
 
-      const updated = await favoriteApi.getFavorites();
+      toast.success("🗑 Removed from favorites");
 
-      set({ favorites: updated });
-    } finally {
-      set({ loading: false });
+      set((state) => ({
+        favorites: state.favorites.filter(
+          (f: any) => f?.tutor?.id !== tutorId
+        ),
+      }));
+    } catch (e) {
+      toast.error("Failed to remove");
+      console.error(e);
     }
+  },
+
+  // CHECK
+  isFavorite: (tutorId: string) => {
+    return get().favorites.some(
+      (f: any) => f?.tutor?.id === tutorId
+    );
   },
 }));

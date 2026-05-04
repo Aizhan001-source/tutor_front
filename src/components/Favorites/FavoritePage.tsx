@@ -1,5 +1,5 @@
-import { Navbar } from "../Payments/ui/Navbar"
-import { Footer } from "../Payments/ui/Footer"
+import { Navbar } from "../Main/ui/Navbar"
+import { Footer } from "../Main/ui/Footer"
 import { Page } from "../Favorites/ui/Page"
 import { HeartIcon } from "@heroicons/react/16/solid"
 
@@ -22,7 +22,7 @@ export const FavoritesPage=() => {
                     <div className="mb-6">
                         <div className="inline-flex items-center gap-2 bg-white rounded-lg shadow-md px-4 py-3">
                             <HeartIcon className=" text-red-600 w-6 h-6"/>
-                            <span className="font-semibold text-gray-900">3</span>
+                            {/* <span className="font-semibold text-gray-900"></span> */}
                             <span className="text-gray-600">Favorites</span>
                         </div>
                     </div>

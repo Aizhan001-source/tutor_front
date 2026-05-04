@@ -1,15 +1,10 @@
 import {
   ArrowLongRightIcon,
   BookOpenIcon,
-  CalendarIcon,
-  UserCircleIcon,
 } from "@heroicons/react/24/outline";
-import { ChatBubbleLeftIcon, ClockIcon } from "@heroicons/react/24/solid";
+import { ClockIcon } from "@heroicons/react/24/solid";
 
 interface TimeProps {
-  date: string | null;
-  setDate: (date: string) => void;
-
   time: string | null;
   setTime: (time: string) => void;
 
@@ -20,15 +15,22 @@ interface TimeProps {
 }
 
 export const Time = ({
-  date,
-  setDate,
   time,
   setTime,
   duration,
   setDuration,
   onProceed,
 }: TimeProps) => {
-  const times = ["09:00 AM", "10:00 AM", "12:00 PM", "14:00 PM", "16:00 PM"];
+
+  // ✅ FIX: нормальный 24h формат
+  const times = [
+    { label: "09:00", value: "09:00" },
+    { label: "10:00", value: "10:00" },
+    { label: "12:00", value: "12:00" },
+    { label: "14:00", value: "14:00" },
+    { label: "16:00", value: "16:00" },
+  ];
+
   const durations = [
     { value: 30, label: "30 min", price: 23 },
     { value: 60, label: "1 hour", price: 45 },
@@ -50,15 +52,15 @@ export const Time = ({
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mb-8">
             {times.map((t) => (
               <button
-                key={t}
-                onClick={() => setTime(t)}
+                key={t.value}
+                onClick={() => setTime(t.value)}
                 className={`p-3 rounded-lg transition ${
-                  time === t
+                  time === t.value
                     ? "bg-indigo-600 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                {t}
+                {t.label}
               </button>
             ))}
           </div>

@@ -1,23 +1,20 @@
 import type { Education } from "./education";
+import type { User } from "./user";
 
 export interface Favorite {
   id: string;
 
-  course_id?: string;
+  bio: string;
+  experience_years: number;
+  price_per_hour: number | string;
+  currency: string;
+  average_rating: number | string;
+  total_reviews: number;
 
-  tutor: {
-    id: string;
+  created_at: string;
+  updated_at: string;
 
-    user: {
-      first_name: string;
-      last_name: string;
-      avatar_url: string;
-    };
+  user: User;
 
-    education?: Education;
-
-    average_rating?: number;
-    experience_years?: number;
-    price_per_hour?: number;
-  };
+  education: Education;
 }

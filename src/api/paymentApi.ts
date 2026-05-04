@@ -1,4 +1,4 @@
-import { api } from "./axios";
+import { api } from "./api";
 import type { Payment } from "../types/payment";
 
 export const paymentApi = {

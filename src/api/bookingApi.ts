@@ -1,19 +1,19 @@
-import { api } from "./axios";
+import { api } from "./api";
 import type { Booking, BookingCreate } from "../types/booking";
 
 export const bookingApi = {
-  getMy: async (): Promise<Booking[]> => {
-    const res = await api.get("/bookings");
-    return res.data;
+  async getMy(): Promise<Booking[]> {
+    const { data } = await api.get("/bookings");
+    return data;
   },
 
-  create: async (data: BookingCreate): Promise<Booking> => {
-    const res = await api.post("/bookings", data);
-    return res.data;
+  async create(payload: BookingCreate): Promise<Booking> {
+    const { data } = await api.post("/bookings", payload);
+    return data;
   },
 
-  getById: async (id: string): Promise<Booking> => {
-    const res = await api.get(`/bookings/${id}`);
-    return res.data;
+  async getById(id: string): Promise<Booking> {
+    const { data } = await api.get(`/bookings/${id}`);
+    return data;
   },
 };
