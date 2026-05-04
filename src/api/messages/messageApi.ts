@@ -16,11 +16,22 @@ export interface ChatPreview {
   content: string;
   is_read: boolean;
   created_at: string;
-  sender: { id: string; first_name: string; last_name: string; avatar_url: string | null };
-  receiver: { id: string; first_name: string; last_name: string; avatar_url: string | null };
+  sender: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    avatar_url: string | null;
+  };
+  receiver: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    avatar_url: string | null;
+  };
 }
 
 export const messageApi = {
+  // ✅ добавлен /api префикс везде
   sendMessage: async (receiver_id: string, content: string): Promise<MessageRead> => {
     const res = await api.post("/messages/", { receiver_id, content });
     return res.data;

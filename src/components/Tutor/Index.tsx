@@ -5,14 +5,15 @@ import { FiAward } from "react-icons/fi";
 import { StarIcon } from "@heroicons/react/24/solid";
 import TokayevImage from "../../assets/president.jpg"
 import { useTutorStore } from "../../store/tutors/tutorStore";
+import { useMessageStore } from "../../store/messages/messageStore";  // добавить
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const TutorIndex = () => {
     const { tutor, isLoading, fetchTutorById } = useTutorStore();
+    const { setActiveUser } = useMessageStore();  // добавить
 
     const navigate = useNavigate();
-
     const { id } = useParams();
 
     useEffect(() => {
@@ -21,18 +22,18 @@ export const TutorIndex = () => {
         }
     }, [id])
 
-
     if (isLoading) {
-        return (
-            <div className="">
-                LOADING...
-            </div>
-        )
+        return <div>LOADING...</div>
     }
 
     const onMessageClick = () => {
-        navigate("/messages")
+        if (tutor?.user?.id) {
+            setActiveUser(tutor.user.id);  // сразу выбираем чат с этим репетитором
+        }
+        navigate("/messages");
     }
+
+    // ... остальной код без изменений
 
     return (
         <div className="min-h-screen bg-blue-50">

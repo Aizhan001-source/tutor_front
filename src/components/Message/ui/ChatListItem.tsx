@@ -1,57 +1,58 @@
+import type { ChatPreview } from "../../../api/messages/messageApi";
+import { useAuthStore } from "../../../store/users/authStore";
+
 interface Props {
-  name: string;
-  lastMessage: string;
-  onClick?: (name: string, avatar: string) => void;
-  isActive?: boolean;
-  avatar: string;
-  unread?: number;
-  isOnline?: boolean;
-  date?: string;
+  chat: ChatPreview;
+  isActive: boolean;
+  onClick: (userId: string) => void;
 }
 
-export const ChatListItem = ({
-  name,
-  lastMessage,
-  onClick,
-  isActive,
-  avatar,
-  unread,
-  isOnline,
-  date,
-}: Props) => {
-  const handleClick = () => {
-    onClick?.(name, avatar);
-  };
+export const ChatListItem = ({ chat, isActive, onClick }: Props) => {
+  const { user } = useAuthStore();
+  const myId = user?.id;
+
+  const other = chat.sender_id === myId ? chat.receiver : chat.sender;
+  const isUnread = !chat.is_read && chat.receiver_id === myId;
+
+  const time = new Date(chat.created_at).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <div
-      onClick={handleClick}
-      className={`flex justify-between p-3 cursor-pointer rounded-lg transition
-        ${isActive ? "bg-blue-100" : "hover:bg-gray-100"}
+      onClick={() => onClick(other.id)}
+      className={`flex justify-between p-3 cursor-pointer rounded-xl transition
+        ${isActive ? "bg-indigo-50 border border-indigo-200" : "hover:bg-gray-100"}
       `}
     >
-      <div className="flex gap-3 items-center relative">
-        <img src={avatar} className="w-12 h-12 rounded-full object-cover" />
-
-        {isOnline && (
-          <span className="absolute bottom-0 left-9 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+      <div className="flex gap-3 items-center">
+        {other.avatar_url ? (
+          <img
+            src={other.avatar_url}
+            className="w-11 h-11 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-11 h-11 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 font-semibold">
+            {other.first_name[0]}
+            {other.last_name[0]}
+          </div>
         )}
 
-        <div className="ml-2">
-          <strong className="block">{name}</strong>
-          <p className="text-sm text-gray-500 m-0">
-            {lastMessage}
+        <div>
+          <strong className="block text-sm text-gray-900">
+            {other.first_name} {other.last_name}
+          </strong>
+          <p className="text-xs text-gray-500 truncate max-w-[180px]">
+            {chat.content}
           </p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 items-end">
-        {date && <span className="text-xs text-gray-400">{date}</span>}
-
-        {unread !== undefined && unread > 0 && (
-          <span className="bg-blue-800 py-1 px-3 text-white rounded-full text-xs">
-            {unread}
-          </span>
+      <div className="flex flex-col gap-1 items-end">
+        <span className="text-xs text-gray-400">{time}</span>
+        {isUnread && (
+          <span className="bg-indigo-600 w-2 h-2 rounded-full" />
         )}
       </div>
     </div>

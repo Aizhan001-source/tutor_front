@@ -15,24 +15,24 @@ export const MessagesLayout = () => {
     sendMessage,
   } = useMessageStore();
 
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
   const navigate = useNavigate();
+  const myId = user?.id;
 
   useEffect(() => {
     if (!token) {
       navigate("/login");
       return;
     }
-
     fetchChats();
   }, [token]);
 
-  const activeChat = chats.find((c) => {
-    return (
-      (c.sender_id === activeUserId && c.receiver_id !== activeUserId) ||
-      (c.receiver_id === activeUserId && c.sender_id !== activeUserId)
-    );
-  }) ?? null;
+  // Находим активный чат: other user это тот, кто НЕ я
+  const activeChat =
+    chats.find((c) => {
+      const otherId = c.sender_id === myId ? c.receiver_id : c.sender_id;
+      return otherId === activeUserId;
+    }) ?? null;
 
   return (
     <div className="flex h-screen">
@@ -46,6 +46,7 @@ export const MessagesLayout = () => {
         activeUserId={activeUserId}
         activeChat={activeChat}
         messages={messages}
+        myId={myId ?? null}
         onSendMessage={(content) =>
           activeUserId && sendMessage(activeUserId, content)
         }

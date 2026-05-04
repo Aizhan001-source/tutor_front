@@ -59,13 +59,20 @@ export const useMessageStore = create<MessageState>((set, get) => ({
   sendMessage: async (receiverId, content) => {
     try {
       const newMsg = await messageApi.sendMessage(receiverId, content);
+      // ✅ добавляем в messages и обновляем chats
       set((state) => ({
         messages: [...state.messages, newMsg],
+        chats: state.chats.map((c) => {
+          const isThisChat =
+            (c.sender_id === receiverId || c.receiver_id === receiverId);
+          if (isThisChat) {
+            return { ...c, content: newMsg.content, created_at: newMsg.created_at };
+          }
+          return c;
+        }),
       }));
     } catch (e: any) {
-      set({
-        error: e.response?.data?.detail || "Ошибка отправки",
-      });
+      set({ error: e.response?.data?.detail || "Ошибка отправки" });
     }
   },
 }));

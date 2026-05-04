@@ -12,8 +12,12 @@ interface AuthState {
   logout: () => void;
 }
 
+// Загружаем user из localStorage при старте
+const storedUser = localStorage.getItem("user");
+const parsedUser: User | null = storedUser ? JSON.parse(storedUser) : null;
+
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
+  user: parsedUser,
   token: localStorage.getItem("token"),
   isLoading: false,
   error: null,
@@ -25,6 +29,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const data = await authApi.login({ email, password });
 
       localStorage.setItem("token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("user_id", data.user.id);
 
       set({
         user: data.user,
@@ -41,6 +47,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logout: () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("user_id");
     set({ user: null, token: null });
   },
 }));

@@ -11,22 +11,18 @@ interface Props {
 
 export const ChatList = ({ chats, activeUserId, onSelectUser }: Props) => {
   const [search, setSearch] = useState("");
-
   const user = useAuthStore((state) => state.user);
   const myId = user?.id;
-
-  const filtered = chats.filter((chat) => {
-    const name = `
-      ${chat.sender.first_name} ${chat.sender.last_name}
-      ${chat.receiver.first_name} ${chat.receiver.last_name}
-    `;
-
-    return name.toLowerCase().includes(search.toLowerCase());
-  });
 
   const getOtherUser = (chat: ChatPreview) => {
     return chat.sender_id === myId ? chat.receiver : chat.sender;
   };
+
+  const filtered = chats.filter((chat) => {
+    const other = getOtherUser(chat);
+    const name = `${other.first_name} ${other.last_name}`;
+    return name.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
     <div className="w-[400px] border-r border-gray-200 p-5 flex flex-col gap-5">
@@ -52,7 +48,6 @@ export const ChatList = ({ chats, activeUserId, onSelectUser }: Props) => {
           filtered.map((chat) => {
             const other = getOtherUser(chat);
             const isActive = activeUserId === other.id;
-
             const time = new Date(chat.created_at).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
@@ -95,10 +90,7 @@ export const ChatList = ({ chats, activeUserId, onSelectUser }: Props) => {
                     </span>
                     <span className="text-xs text-gray-400">{time}</span>
                   </div>
-
-                  <p className="text-xs text-gray-500 truncate">
-                    {chat.content}
-                  </p>
+                  <p className="text-xs text-gray-500 truncate">{chat.content}</p>
                 </div>
               </div>
             );

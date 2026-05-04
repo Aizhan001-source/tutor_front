@@ -1,13 +1,12 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { useAuthStore } from "../../../store/users/authStore";
-import RegisterForm from "../../Login/ui/RegisterForm";
+import RegisterForm from "./RegisterForm";
+import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
-  // const navigate = useNavigate();
-
   const { login, isLoading, error } = useAuthStore();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,38 +14,16 @@ export const LoginForm = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     await login(email, password);
-
-    // if (token) {
-    //   navigate("/");
-    // }
+    // после логина редиректим на главную
+    const token = localStorage.getItem("token");
+    if (token) navigate("/");
   };
 
-  // 👉 РЕГИСТРАЦИЯ РЕЖИМ
   if (isRegister) {
-    return (
-      <div>
-        <RegisterForm />
-
-        {/* SWITCH BACK */}
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">
-            Already have an account?
-            <button
-              type="button"
-              onClick={() => setIsRegister(false)}
-              className="text-indigo-600 hover:text-indigo-700 font-semibold ml-1"
-            >
-              Sign In
-            </button>
-          </p>
-        </div>
-      </div>
-    );
+    return <RegisterForm onBack={() => setIsRegister(false)} />;
   }
 
-  // 👉 LOGIN РЕЖИМ
   return (
     <form
       onSubmit={onSubmit}
@@ -76,15 +53,12 @@ export const LoginForm = () => {
 
       {/* PASSWORD */}
       <div>
-        <label className="block text-sm text-gray-700 mb-2">
-          Password
-        </label>
-
+        <label className="block text-sm text-gray-700 mb-2">Password</label>
         <div className="relative">
           <LockClosedIcon className="w-5 h-5 text-[#99A1AF] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="password"
-            placeholder="........"
+            placeholder="••••••••"
             className="w-full border border-gray-300 pl-11 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -109,16 +83,15 @@ export const LoginForm = () => {
           />
           <span className="ml-2 text-gray-600">Remember me</span>
         </label>
-
-        <a
-          href="#"
+        <button
+          type="button"
           className="text-indigo-600 hover:text-indigo-700 font-medium"
         >
           Forgot password?
-        </a>
+        </button>
       </div>
 
-      {/* BUTTON */}
+      {/* SUBMIT */}
       <button
         type="submit"
         disabled={isLoading}
@@ -127,8 +100,8 @@ export const LoginForm = () => {
         {isLoading ? "Loading..." : "Sign in"}
       </button>
 
-      {/* FOOTER */}
-      <div className="mt-6 text-center">
+      {/* SWITCH TO REGISTER */}
+      <div className="mt-4 text-center">
         <p className="text-gray-600">
           Don't have an account?
           <button

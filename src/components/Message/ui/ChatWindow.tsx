@@ -1,18 +1,28 @@
 import React, { useRef, useEffect, useState } from "react";
-import { PhoneIcon, VideoCameraIcon, EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import {
+  PhoneIcon,
+  VideoCameraIcon,
+  EllipsisVerticalIcon,
+} from "@heroicons/react/24/outline";
 import type { MessageRead, ChatPreview } from "../../../api/messages/messageApi";
 
 interface Props {
   activeUserId: string | null;
   activeChat: ChatPreview | null;
   messages: MessageRead[];
+  myId: string | null;
   onSendMessage: (content: string) => void;
 }
 
-export const ChatWindow = ({ activeUserId, activeChat, messages, onSendMessage }: Props) => {
+export const ChatWindow = ({
+  activeUserId,
+  activeChat,
+  messages,
+  myId,
+  onSendMessage,
+}: Props) => {
   const [text, setText] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
-  const myId = localStorage.getItem("user_id");
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -39,6 +49,7 @@ export const ChatWindow = ({ activeUserId, activeChat, messages, onSendMessage }
     );
   }
 
+  // Собеседник — тот кто НЕ я
   const other =
     activeChat.sender_id === myId ? activeChat.receiver : activeChat.sender;
 
@@ -54,11 +65,9 @@ export const ChatWindow = ({ activeUserId, activeChat, messages, onSendMessage }
               {other.first_name[0]}{other.last_name[0]}
             </div>
           )}
-          <div>
-            <strong className="block text-gray-900">
-              {other.first_name} {other.last_name}
-            </strong>
-          </div>
+          <strong className="block text-gray-900">
+            {other.first_name} {other.last_name}
+          </strong>
         </div>
 
         <div className="flex items-center gap-4">
@@ -76,6 +85,11 @@ export const ChatWindow = ({ activeUserId, activeChat, messages, onSendMessage }
 
       {/* Messages */}
       <div className="flex-1 p-4 overflow-y-auto flex flex-col gap-2">
+        {messages.length === 0 && (
+          <p className="text-center text-gray-400 text-sm mt-4">
+            Нет сообщений. Напишите первым!
+          </p>
+        )}
         {messages.map((msg) => {
           const isOwn = msg.sender_id === myId;
           const time = new Date(msg.created_at).toLocaleTimeString([], {
