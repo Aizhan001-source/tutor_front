@@ -1,6 +1,6 @@
 import {LogoPage} from "../RoleSelection/ui/LogPage"
 import {CardBar} from "../RoleSelection/ui/CardBar"
-import {FooterBar} from "../RoleSelection/ui/FooterBar"
+import {FooterBar} from "./ui/AdminSelect"
 
 export const RoleSelectionPage = () => {
     return (

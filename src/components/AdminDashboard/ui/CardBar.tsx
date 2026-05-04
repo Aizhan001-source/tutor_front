@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import MetricCard from "./MetricCard";
 
 import StudentsIcon from "../../../assets/person2.svg";
@@ -5,7 +6,27 @@ import TutorsIcon from "../../../assets/hat2.svg";
 import SessionsIcon from "../../../assets/book2.svg";
 import RevenueIcon from "../../../assets/dollar.svg";
 
+import { useStudentStore } from "../../../store/students/studentStore";
+import { useTutorCountStore } from "../../../store/tutors/tutorCountStore";
+
 export const CardBar = () => {
+  const {
+    count: studentsCount,
+    fetchStudentsCount,
+    isLoading: studentsLoading,
+  } = useStudentStore();
+
+  const {
+    count: tutorsCount,
+    fetchTutorsCount,
+    isLoading: tutorsLoading,
+  } = useTutorCountStore();
+
+  useEffect(() => {
+    fetchStudentsCount();
+    fetchTutorsCount();
+  }, [fetchStudentsCount, fetchTutorsCount]);
+
   return (
     <div>
       <section className="px-8 py-8">
@@ -19,29 +40,37 @@ export const CardBar = () => {
 
       <section className="px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          
-          <MetricCard 
+
+          <MetricCard
             title="Total Students"
-            value="1,234"
+            value={
+              studentsLoading
+                ? "Loading..."
+                : studentsCount.toLocaleString()
+            }
             color="bg-blue-500"
             imgSrc={StudentsIcon}
           />
-          
-          <MetricCard 
+
+          <MetricCard
             title="Total Tutors"
-            value="156"
+            value={
+              tutorsLoading
+                ? "Loading..."
+                : tutorsCount.toLocaleString()
+            }
             color="bg-purple-500"
             imgSrc={TutorsIcon}
           />
 
-          <MetricCard 
+          <MetricCard
             title="Active Sessions"
             value="487"
             color="bg-green-500"
             imgSrc={SessionsIcon}
           />
 
-          <MetricCard 
+          <MetricCard
             title="Revenue (MTD)"
             value="$45,892"
             color="bg-yellow-500"

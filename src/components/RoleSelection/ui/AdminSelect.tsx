@@ -1,7 +1,14 @@
+import { useNavigate } from "react-router-dom";
+
 export const FooterBar = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="text-center mt-12">
-            <button className="text-gray-500 hover:text-gray-700 text-sm font-medium transition">
+            <button
+                onClick={() => navigate("/login/admin")}
+                className="text-gray-500 hover:text-gray-700 text-sm font-medium transition"
+            >
                 Admin Access →
             </button>
 
