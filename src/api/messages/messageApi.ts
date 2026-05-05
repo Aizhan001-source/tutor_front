@@ -31,7 +31,6 @@ export interface ChatPreview {
 }
 
 export const messageApi = {
-  // ✅ добавлен /api префикс везде
   sendMessage: async (receiver_id: string, content: string): Promise<MessageRead> => {
     const res = await api.post("/messages/", { receiver_id, content });
     return res.data;
