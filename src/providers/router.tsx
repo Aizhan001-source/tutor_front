@@ -9,7 +9,7 @@ import { AdminLoginPage } from "../components/Login/AdminLoginPage";
 import StudentRegisterPage from "../components/Login/StudentRegisterPage";
 import TutorRegisterPage from "../components/Login/TutorRegisterPage";
 import { SettingsPage } from "../components/Settings/SettingPage";
-
+import { ScheduleIndex } from "../components/Schedule/ScheduleIndex";
 
 export const router = createBrowserRouter([
   { path: "/", element: <MainPage /> },
@@ -44,5 +44,5 @@ export const router = createBrowserRouter([
   { path: "/register/tutor", element: <TutorRegisterPage /> },
   { path: "/tutors/:id", element: <TutorIndex /> },
   { path: "/settings", element: <SettingsPage /> },
-
+  { path: "/schedule", element: <ScheduleIndex /> },
 ]);
