@@ -15,9 +15,16 @@ export interface TutorByIdResponse {
   bio: string;
   experience_years: number;
   education: TutorEducation;
+
   price_per_hour: string;
   currency: string;
+
   user: TutorUser;
+
+  // 🔥 ДОБАВЬ ЭТИ ПОЛЯ
+  average_rating: string;
+  total_reviews: number;
+
   created_at: string;
   updated_at: string;
 }

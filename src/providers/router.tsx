@@ -10,6 +10,7 @@ import { TutorLoginPage } from "../components/Login/TutorLoginPage";
 import { AdminLoginPage } from "../components/Login/AdminLoginPage";
 import StudentRegisterPage from "../components/Login/StudentRegisterPage";
 import TutorRegisterPage from "../components/Login/TutorRegisterPage";
+import { TutorProfil } from "../components/TutorProfil/TutorProfil"
 
 
 export const router = createBrowserRouter([
@@ -31,5 +32,6 @@ export const router = createBrowserRouter([
   },
   { path: '/register/student', element: <StudentRegisterPage /> },
   { path: '/register/tutor', element: <TutorRegisterPage /> },
+  { path: '/tutor_profil', element: <TutorProfil /> },
   // { path: '/register', element: <RegisterPage /> },
 ]);

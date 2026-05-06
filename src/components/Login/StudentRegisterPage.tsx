@@ -8,8 +8,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import { authApi } from "../../api/auth/authApi";
+import type { RegisterRequest } from "../../types/user";
 
-const STUDENT_ROLE_ID = "907288a5-0b48-4d9f-9591-0e10efc3970d";
+const STUDENT_ROLE_ID = "0bc93566-62bb-40e0-8a52-c8f382fc1b19";
 
 const StudentRegisterPage = () => {
   const navigate = useNavigate();
@@ -18,38 +19,68 @@ const StudentRegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setError(null);
     setSuccess(null);
+
+    if (!fullName.trim()) {
+      setError("Full name is required");
+      return;
+    }
+
+    if (!email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Password is required");
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
 
-    const parts = fullName.trim().split(" ");
+    const parts = fullName.trim().split(/\s+/);
+    const first_name = parts[0];
+    const last_name =
+      parts.length > 1 ? parts.slice(1).join(" ") : "Unknown";
 
-    const first_name = parts[0] || "";
-    const last_name = parts.slice(1).join(" ").trim() || "Unknown";
+    const payload: RegisterRequest = {
+      first_name,
+      last_name,
+      email,
+      password,
+      role_id: STUDENT_ROLE_ID,
+    };
 
     try {
-      await authApi.register({
-        first_name,
-        last_name,
-        email,
-        password,
-        role_id: STUDENT_ROLE_ID,
-      });
+      setLoading(true);
+
+      await authApi.register(payload);
 
       setSuccess("Registration successful!");
 
-      setTimeout(() => navigate("/login/student"), 1500);
+      setTimeout(() => {
+        navigate("/login/student");
+      }, 1200);
     } catch (err: any) {
-      setError(err?.response?.data?.detail || "Registration failed");
+      setError(
+        err?.response?.data?.detail ||
+          err?.message ||
+          "Unexpected error"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,9 +102,11 @@ const StudentRegisterPage = () => {
               <BookOpenIcon className="w-8 h-8 text-white" />
             </div>
           </div>
+
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Student Registration
           </h1>
+
           <p className="text-gray-600">
             Create an account to start learning
           </p>
@@ -87,14 +120,15 @@ const StudentRegisterPage = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Full Name
               </label>
+
               <div className="relative">
                 <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
                 <input
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="John Doe"
                   className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  required
                 />
               </div>
             </div>
@@ -104,15 +138,16 @@ const StudentRegisterPage = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
               </label>
+
               <div className="relative">
                 <EnvelopeIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  required
                 />
               </div>
             </div>
@@ -122,47 +157,33 @@ const StudentRegisterPage = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
+
               <div className="relative">
                 <LockClosedIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  required
                 />
               </div>
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
-              </label>
               <div className="relative">
                 <LockClosedIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
                 <input
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Confirm password"
                   className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  required
                 />
               </div>
-            </div>
-
-            {/* Terms */}
-            <div className="flex items-start">
-              <input
-                type="checkbox"
-                required
-                className="mt-1 rounded border-gray-300 text-indigo-600"
-              />
-              <span className="ml-2 text-sm text-gray-600">
-                I agree to the Terms of Service and Privacy Policy
-              </span>
             </div>
 
             {/* Error */}
@@ -181,9 +202,10 @@ const StudentRegisterPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition"
+              disabled={loading}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition disabled:opacity-50"
             >
-              Create Account
+              {loading ? "Creating account..." : "Create Account"}
             </button>
           </form>
 
@@ -198,8 +220,8 @@ const StudentRegisterPage = () => {
               </button>
             </p>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   );
